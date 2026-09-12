@@ -471,6 +471,126 @@
     .foot-cta{padding:10px 18px; font-size:12px;}
     footer .fine{font-size:11px; justify-content:flex-start; flex-direction:column;}
   }
+
+  /* Booking Status Modal */
+.booking-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+}
+
+.booking-modal-overlay.active {
+  display: flex;
+}
+
+.booking-modal {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 35px 28px 30px;
+  text-align: center;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+  animation: bookingModalIn 0.25s ease;
+}
+
+.booking-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  color: #777;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.booking-modal-close:hover {
+  color: #111;
+}
+
+.booking-modal-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.booking-modal h3 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  color: #171717;
+}
+
+.booking-modal p {
+  margin: 0 auto 25px;
+  max-width: 340px;
+  color: #777;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.booking-modal-btn {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 20px;
+  background: #111;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.booking-modal-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+@keyframes bookingModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-modal {
+    padding: 32px 20px 24px;
+    border-radius: 17px;
+  }
+
+  .booking-modal h3 {
+    font-size: 21px;
+  }
+
+  .booking-modal p {
+    font-size: 14px;
+  }
+}
 </style>
 </head>
 <body>
@@ -592,7 +712,7 @@
         <div class="row"><span>Caution deposit</span><span>₦100,000</span></div>
         <div class="row total"><span>Total due</span><span id="grandTotal">₦0</span></div>
       </div>
-      <button class="btn-primary" onclick="calcTotal()">Book Apartment</button>
+      <button class="btn-primary" onclick="bookApartment()">Book Apartment</button>
       <p class="book-note">Caution deposit is refundable at checkout</p>
     </aside>
   </div>
@@ -665,6 +785,41 @@
   </div>
 </footer>
 
+<!-- Booking Status Modal -->
+<div class="booking-modal-overlay" id="bookingModal">
+  <div class="booking-modal">
+    <button class="booking-modal-close" onclick="closeBookingModal()">×</button>
+
+    <div class="booking-modal-icon" id="bookingModalIcon">✓</div>
+
+    <h3 id="bookingModalTitle">Dates Available</h3>
+
+    <p id="bookingModalMessage">
+      Your selected dates are available.
+    </p>
+
+    <button
+      class="booking-modal-btn"
+      id="bookingModalButton"
+      onclick="closeBookingModal()"
+    >
+      Proceed to payment
+    </button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = 'https://ojvnklwlvtsvhoqcwepf.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_BUeNn6eseY67kEYE74HtNQ_Rw5i3Z5S';
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+</script>
+
 <script>
   function nightsBetween(a,b){
     const d1=new Date(a), d2=new Date(b);
@@ -685,6 +840,96 @@
     document.getElementById('grandTotal').textContent = '₦'+(stay+caution).toLocaleString();
     box.style.display='block';
   }
+  async function bookApartment() {
+  // Calculate and display the total first
+  calcTotal();
+
+  // Get selected dates
+  const checkin = document.getElementById('checkin').value;
+  const checkout = document.getElementById('checkout').value;
+
+  // Stop if dates are missing
+  if (!checkin || !checkout) {
+    return;
+  }
+
+  // Make sure checkout is after check-in
+  const nights = nightsBetween(checkin, checkout);
+
+  if (nights <= 0) {
+    return;
+  }
+
+  // Check Supabase for an existing booking
+  const { data, error } = await supabaseClient
+    .from('Bookings')
+    .select('id, check_in, check_out')
+    .eq('apartment_id', 'apartment-1')
+    .eq('booking_status', 'confirmed')
+    .lt('check_in', checkout)
+    .gt('check_out', checkin);
+
+  // Handle database error
+  if (error) {
+    console.error('Availability check failed:', error);
+    alert('Unable to check availability. Please try again.');
+    return;
+  }
+
+  // If we found a booking, the dates overlap
+  if (data && data.length > 0) {
+    showBookingModal(
+  'error',
+  'Dates Unavailable',
+  'Sorry, this apartment is already booked for some of your selected dates. Please choose different dates.',
+  'Choose New Dates'
+);
+    return;
+  }
+
+  // Dates are available
+  showBookingModal(
+  'success',
+  'Dates Available',
+  'Great! Your selected dates are available🎉. You can continue to payment.',
+  'Continue to Payment'
+);
+}
+
+function showBookingModal(type, title, message, buttonText = 'Proceed to payment') {
+  const modal = document.getElementById('bookingModal');
+  const icon = document.getElementById('bookingModalIcon');
+  const titleEl = document.getElementById('bookingModalTitle');
+  const messageEl = document.getElementById('bookingModalMessage');
+  const button = document.getElementById('bookingModalButton');
+
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  button.textContent = buttonText;
+
+  if (type === 'success') {
+    icon.textContent = '✓';
+  } else {
+    icon.textContent = '×';
+  }
+
+  modal.classList.add('active');
+}
+
+function closeBookingModal() {
+  document.getElementById('bookingModal').classList.remove('active');
+}
+
+// Prevent customers from selecting dates in the past
+const today = new Date().toISOString().split('T')[0];
+
+document.getElementById('checkin').min = today;
+document.getElementById('checkout').min = today;
+
+// Make checkout date adjust when check-in changes
+document.getElementById('checkin').addEventListener('change', function () {
+  document.getElementById('checkout').min = this.value;
+});
 </script>
 
 </body>
