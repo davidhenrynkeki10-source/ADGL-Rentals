@@ -1114,25 +1114,13 @@ setDateRestrictions();
 
 // Check-in changed
 checkin.addEventListener('change', function () {
-  // Clear previous checkout selection
-  checkout.value = '';
+  const today = getTodayLocal();
 
-  // Update checkout restriction
-  setDateRestrictions();
-
-  // Validate check-in
-  validateDates();
+  checkin.min = today;
+  checkout.min = today;
 });
 
-// Check-out changed
-checkout.addEventListener('change', function () {
-  // Give iOS Safari time to finish updating the date input
-  setTimeout(() => {
-    if (!checkout.value) return;
 
-    validateDates();
-  }, 100);
-});
 
 });
 </script>
