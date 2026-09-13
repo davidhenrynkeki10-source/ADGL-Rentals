@@ -983,7 +983,7 @@ async function bookApartment() {
   }
 
   // Make sure checkout is after check-in
-  if (checkout <= checkin) {
+  if (checkout && checkin && checkout <= checkin) {
     alert('Check-out must be after your check-in date.');
     return;
   }
