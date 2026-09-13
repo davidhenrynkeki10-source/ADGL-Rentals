@@ -1074,42 +1074,65 @@ document.addEventListener('DOMContentLoaded', function () {
     );
   }
 
-  function validateDates() {
-    const today = getTodayLocal();
+  function setDateRestrictions() {
+  const today = getTodayLocal();
 
-    // Set minimum dates
-    checkin.min = today;
-    checkout.min = checkin.value || today;
+  // Check-in cannot be before today
+  checkin.min = today;
 
-    // Check-in cannot be in the past
-    if (checkin.value && checkin.value < today) {
-      checkin.value = '';
-      alert('Please select today or a future date for check-in.');
-      return false;
-    }
+  // Checkout must be after the selected check-in date
+  if (checkin.value) {
+    checkout.min = checkin.value;
+  } else {
+    checkout.min = today;
+  }
+}
 
-    // Check-out cannot be before check-in
-    if (checkout.value && checkout.value < (checkin.value || today)) {
-      checkout.value = '';
-      alert('Check-out must be after your check-in date.');
-      return false;
-    }
+function validateDates() {
+  const today = getTodayLocal();
 
-    return true;
+  // Check-in cannot be in the past
+  if (checkin.value && checkin.value < today) {
+    checkin.value = '';
+    setDateRestrictions();
+    alert('Please select today or a future date for check-in.');
+    return false;
   }
 
-  // Set restrictions when page loads
+  // Only validate checkout if a checkout date has actually been selected
+  if (
+    checkin.value &&
+    checkout.value &&
+    checkout.value <= checkin.value
+  ) {
+    checkout.value = '';
+    alert('Check-out must be after your check-in date.');
+    return false;
+  }
+
+  return true;
+}
+
+// Set restrictions when page loads
+setDateRestrictions();
+
+// Check-in changed
+checkin.addEventListener('change', function () {
+  // Clear previous checkout selection
+  checkout.value = '';
+
+  // Update checkout restriction
+  setDateRestrictions();
+
+  // Validate check-in
   validateDates();
+});
 
-  // Check-in changed
-  checkin.addEventListener('change', function () {
-    validateDates();
-  });
-
-  // Check-out changed
-  checkout.addEventListener('change', function () {
-    validateDates();
-  });
+// Check-out changed
+checkout.addEventListener('change', function () {
+  // Validate only after checkout has been selected
+  validateDates();
+});
 });
 </script>
 
