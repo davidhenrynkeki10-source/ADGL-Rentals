@@ -977,7 +977,7 @@ if (checkin < localToday) {
   return;
 }
 
-if (checkout <= checkin) {
+if (checkout && checkout <= checkin) {
   alert('Check-out must be after check-in.');
   return;
 }
