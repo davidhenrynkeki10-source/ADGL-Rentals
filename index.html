@@ -1099,7 +1099,7 @@ function validateDates() {
   if (
     checkin.value &&
     checkout.value &&
-    checkout.value < checkin.value
+    checkout.value <= checkin.value
   ) {
     checkout.value = '';
     alert('Check-out must be after your check-in date.');
