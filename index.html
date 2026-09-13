@@ -848,6 +848,24 @@
   const checkin = document.getElementById('checkin').value;
   const checkout = document.getElementById('checkout').value;
 
+  const today = new Date();
+const localToday =
+  today.getFullYear() +
+  '-' +
+  String(today.getMonth() + 1).padStart(2, '0') +
+  '-' +
+  String(today.getDate()).padStart(2, '0');
+
+if (checkin < localToday) {
+  alert('Please select today or a future date for check-in.');
+  return;
+}
+
+if (checkout <= checkin) {
+  alert('Check-out must be after check-in.');
+  return;
+}
+
   // Stop if dates are missing
   if (!checkin || !checkout) {
     return;
@@ -920,35 +938,59 @@ function closeBookingModal() {
   document.getElementById('bookingModal').classList.remove('active');
 }
 
-// Mobile-friendly booking date controls
 document.addEventListener('DOMContentLoaded', function () {
   const checkin = document.getElementById('checkin');
   const checkout = document.getElementById('checkout');
 
   if (!checkin || !checkout) return;
 
-  // Get today's date using local time
-  const today = new Date();
+  function getTodayLocal() {
+    const now = new Date();
 
-  const localToday =
-    today.getFullYear() +
-    '-' +
-    String(today.getMonth() + 1).padStart(2, '0') +
-    '-' +
-    String(today.getDate()).padStart(2, '0');
+    return (
+      now.getFullYear() +
+      '-' +
+      String(now.getMonth() + 1).padStart(2, '0') +
+      '-' +
+      String(now.getDate()).padStart(2, '0')
+    );
+  }
 
-  // Prevent past dates
-  checkin.min = localToday;
-  checkout.min = localToday;
+  function validateDates() {
+    const today = getTodayLocal();
 
-  // When check-in changes, checkout cannot be before check-in
-  checkin.addEventListener('change', function () {
-    checkout.min = this.value;
+    // Set minimum dates
+    checkin.min = today;
+    checkout.min = checkin.value || today;
 
-    // Clear checkout if it is now invalid
-    if (checkout.value && checkout.value < this.value) {
-      checkout.value = '';
+    // Check-in cannot be in the past
+    if (checkin.value && checkin.value < today) {
+      checkin.value = '';
+      alert('Please select today or a future date for check-in.');
+      return false;
     }
+
+    // Check-out cannot be before check-in
+    if (checkout.value && checkout.value < (checkin.value || today)) {
+      checkout.value = '';
+      alert('Check-out must be after your check-in date.');
+      return false;
+    }
+
+    return true;
+  }
+
+  // Set restrictions when page loads
+  validateDates();
+
+  // Check-in changed
+  checkin.addEventListener('change', function () {
+    validateDates();
+  });
+
+  // Check-out changed
+  checkout.addEventListener('change', function () {
+    validateDates();
   });
 });
 </script>
