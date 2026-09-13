@@ -1081,12 +1081,8 @@ document.addEventListener('DOMContentLoaded', function () {
   checkin.min = today;
 
   // Checkout must be after the selected check-in date
-  if (checkin.value) {
-    checkout.min = checkin.value;
-  } else {
-    checkout.min = today;
-  }
-}
+  checkin.min = today;
+  }  
 
 function validateDates() {
   const today = getTodayLocal();
