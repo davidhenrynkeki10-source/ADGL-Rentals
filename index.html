@@ -1103,7 +1103,7 @@ function validateDates() {
   if (
     checkin.value &&
     checkout.value &&
-    checkout.value <= checkin.value
+    checkout.value < checkin.value
   ) {
     checkout.value = '';
     alert('Check-out must be after your check-in date.');
@@ -1130,9 +1130,14 @@ checkin.addEventListener('change', function () {
 
 // Check-out changed
 checkout.addEventListener('change', function () {
-  // Validate only after checkout has been selected
-  validateDates();
+  // Give iOS Safari time to finish updating the date input
+  setTimeout(() => {
+    if (!checkout.value) return;
+
+    validateDates();
+  }, 100);
 });
+
 });
 </script>
 
