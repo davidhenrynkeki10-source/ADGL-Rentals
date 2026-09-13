@@ -956,43 +956,48 @@
     document.getElementById('grandTotal').textContent = '₦'+(stay+caution).toLocaleString();
     box.style.display='block';
   }
+  
   async function bookApartment() {
-  // Calculate and display the total first
-  calcTotal();
-
-  // Get selected dates
   const checkin = document.getElementById('checkin').value;
   const checkout = document.getElementById('checkout').value;
 
-  const today = new Date();
-const localToday =
-  today.getFullYear() +
-  '-' +
-  String(today.getMonth() + 1).padStart(2, '0') +
-  '-' +
-  String(today.getDate()).padStart(2, '0');
-
-if (checkin < localToday) {
-  alert('Please select today or a future date for check-in.');
-  return;
-}
-
-if (checkout && checkout <= checkin) {
-  alert('Check-out must be after check-in.');
-  return;
-}
-
-  // Stop if dates are missing
+  // Make sure both dates have been selected
   if (!checkin || !checkout) {
+    alert('Please choose both your check-in and check-out dates.');
+    return;
+  }
+
+  // Get today's date using local time
+  const today = new Date();
+  const localToday =
+    today.getFullYear() +
+    '-' +
+    String(today.getMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(today.getDate()).padStart(2, '0');
+
+  // Prevent past check-in dates
+  if (checkin < localToday) {
+    alert('Please select today or a future date for check-in.');
     return;
   }
 
   // Make sure checkout is after check-in
+  if (checkout <= checkin) {
+    alert('Check-out must be after your check-in date.');
+    return;
+  }
+
+  // Calculate the number of nights
   const nights = nightsBetween(checkin, checkout);
 
   if (nights <= 0) {
+    alert('Please select valid booking dates.');
     return;
   }
+
+  // Calculate and display the price
+  calcTotal();
 
   // Check Supabase for an existing booking
   const { data, error } = await supabaseClient
@@ -1010,24 +1015,21 @@ if (checkout && checkout <= checkin) {
     return;
   }
 
-  // If we found a booking, the dates overlap
+  // If dates overlap an existing booking
   if (data && data.length > 0) {
-    showBookingModal(
-  'error',
-  'Dates Unavailable',
-  'Sorry, this apartment is already booked for some of your selected dates. Please choose different dates.',
-  'Choose New Dates'
-);
+    alert(
+      'Sorry, this apartment is already booked for some of your selected dates. Please choose different dates.'
+    );
     return;
   }
 
   // Dates are available
   showBookingModal(
-  'success',
-  'Dates Available',
-  'Great! Your selected dates are available🎉. You can continue to payment.',
-  'Continue to Payment'
-);
+    'success',
+    'Dates Available',
+    'Great! Your selected dates are available 🎉',
+    'Continue to Payment'
+  );
 }
 
 function showBookingModal(type, title, message, buttonText = 'Proceed to payment') {
