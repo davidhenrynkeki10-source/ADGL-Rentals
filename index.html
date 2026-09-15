@@ -680,6 +680,28 @@
     font-size: 14px;
   }
 }
+
+.payment-email-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  color: #171717;
+  font-size: 16px;
+  outline: none;
+}
+
+.payment-email-input:focus {
+  border-color: #111;
+}
+
+.payment-email-input::placeholder {
+  color: #999;
+}
+
 </style>
 </head>
 <body>
@@ -922,7 +944,41 @@
       Proceed to payment
     </button>
   </div>
+
+  <!-- Payment Email Modal -->
+<div class="booking-modal-overlay" id="emailModal">
+  <div class="booking-modal">
+    <button class="booking-modal-close" onclick="closeEmailModal()">×</button>
+
+    <div class="booking-modal-icon">✉</div>
+
+    <h3>Continue to Payment</h3>
+
+    <p>
+      Enter your email address to continue with your booking.
+    </p>
+
+    <input
+      type="email"
+      id="customerEmail"
+      class="payment-email-input"
+      placeholder="Email address"
+      autocomplete="email"
+      required
+    >
+
+    <button
+      class="booking-modal-btn"
+      onclick="startPaystackPayment()"
+    >
+      Continue to Payment
+    </button>
+  </div>
 </div>
+
+</div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -935,6 +991,8 @@
     SUPABASE_KEY
   );
 </script>
+
+<script src="https://js.paystack.co/v2/inline.js"></script>
 
 <script>
   function nightsBetween(a,b){
@@ -1044,6 +1102,12 @@ function showBookingModal(type, title, message, buttonText = 'Proceed to payment
   button.textContent = buttonText;
 
   if (type === 'success') {
+  button.onclick = openEmailModal;
+} else {
+  button.onclick = closeBookingModal;
+}
+
+  if (type === 'success') {
     icon.textContent = '✓';
   } else {
     icon.textContent = '×';
@@ -1054,6 +1118,98 @@ function showBookingModal(type, title, message, buttonText = 'Proceed to payment
 
 function closeBookingModal() {
   document.getElementById('bookingModal').classList.remove('active');
+}
+
+function openEmailModal() {
+  closeBookingModal();
+
+  document.getElementById('emailModal').classList.add('active');
+
+  setTimeout(() => {
+    document.getElementById('customerEmail').focus();
+  }, 200);
+}
+
+function closeEmailModal() {
+  document.getElementById('emailModal').classList.remove('active');
+}
+
+function startPaystackPayment() {
+  const email = document.getElementById('customerEmail').value.trim();
+
+  const checkin = document.getElementById('checkin').value;
+  const checkout = document.getElementById('checkout').value;
+
+  // Validate email
+  if (!email) {
+    alert('Please enter your email address.');
+    return;
+  }
+
+  if (!email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  // Make sure booking dates still exist
+  if (!checkin || !checkout) {
+    alert('Please select your booking dates again.');
+    closeEmailModal();
+    return;
+  }
+
+  const nights = nightsBetween(checkin, checkout);
+
+  if (nights <= 0) {
+    alert('Please select valid booking dates.');
+    closeEmailModal();
+    return;
+  }
+
+  // Booking price
+  const rate = 150000;
+  const caution = 100000;
+
+  const totalNaira = (nights * rate) + caution;
+
+  // Paystack expects amount in kobo
+  const amountInKobo = totalNaira * 100;
+
+  const paystack = new PaystackPop();
+
+  paystack.newTransaction({
+    key: 'pk_test_388982eb6bcce82e0047c298a3194f8eee8cf318',
+
+    email: email,
+
+    amount: amountInKobo,
+
+    currency: 'NGN',
+
+    onSuccess: (transaction) => {
+      console.log('Paystack transaction:', transaction);
+
+      closeEmailModal();
+
+      alert(
+        'Test payment successful! Reference: ' +
+        transaction.reference
+      );
+
+      // IMPORTANT:
+      // We will verify this payment on the backend next.
+      // Do NOT create a confirmed Supabase booking here yet.
+    },
+
+    onCancel: () => {
+      console.log('Customer cancelled payment.');
+    },
+
+    onError: (error) => {
+      console.error('Paystack error:', error);
+      alert('Unable to start payment. Please try again.');
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
