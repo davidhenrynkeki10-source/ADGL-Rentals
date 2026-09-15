@@ -1197,20 +1197,43 @@ function startPaystackPayment() {
 
     currency: 'NGN',
 
-    onSuccess: (transaction) => {
-      console.log('Paystack transaction:', transaction);
+    onSuccess: async (transaction) => {
+  console.log('Paystack transaction:', transaction);
 
-      closeEmailModal();
+  try {
+    const response = await fetch('/api/verify-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        reference: transaction.reference
+      })
+    });
 
+    const result = await response.json();
+
+    console.log('Verification result:', result);
+
+    if (!response.ok || !result.verified) {
       alert(
-        'Test payment successful! Reference: ' +
-        transaction.reference
+        'Payment was received, but we could not verify it. Please contact support.'
       );
+      return;
+    }
 
-      // IMPORTANT:
-      // We will verify this payment on the backend next.
-      // Do NOT create a confirmed Supabase booking here yet.
-    },
+    closeEmailModal();
+
+    alert('Payment verified successfully! 🎉');
+
+  } catch (error) {
+    console.error('Verification error:', error);
+
+    alert(
+      'Payment was received, but verification failed. Please contact support.'
+    );
+  }
+},
 
     onCancel: () => {
       console.log('Customer cancelled payment.');
