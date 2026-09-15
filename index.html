@@ -1102,22 +1102,13 @@ function showBookingModal(type, title, message, buttonText = 'Continue') {
   messageEl.textContent = message;
   button.textContent = buttonText;
 
-  if (type === 'success') {
-    icon.textContent = '✓';
-
-    // Continue directly to email/payment
-    button.onclick = function () {
-      openEmailModal();
-    };
-
-  } else {
-    icon.textContent = '×';
-
-    // For unavailable dates, simply close the popup
-    button.onclick = function () {
-      closeBookingModal();
-    };
-  }
+ if (type === 'success') {
+  icon.textContent = '✓';
+  button.onclick = openEmailModal;
+} else {
+  icon.textContent = '×';
+  button.onclick = closeBookingModal;
+}
 
   modal.classList.add('active');
 }
