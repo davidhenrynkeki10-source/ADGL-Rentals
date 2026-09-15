@@ -945,11 +945,19 @@
       Continue to payment
     </button>
   </div>
+  </div>
 
   <!-- Payment Email Modal -->
 <div class="booking-modal-overlay" id="emailModal">
   <div class="booking-modal">
-    <button class="booking-modal-close" onclick="closeEmailModal()">×</button>
+
+    <button
+      type="button"
+      class="booking-modal-close"
+      onclick="closeEmailModal()"
+    >
+      ×
+    </button>
 
     <div class="booking-modal-icon">✉</div>
 
@@ -969,16 +977,18 @@
     >
 
     <button
+      type="button"
       class="booking-modal-btn"
       onclick="startPaystackPayment()"
     >
       Continue to Payment
     </button>
+
   </div>
 </div>
 
-</div>
 
+ 
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
