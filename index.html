@@ -939,7 +939,7 @@
     <button
       class="booking-modal-btn"
       id="bookingModalButton"
-      onclick="closeBookingModal()"
+      type="button"
     >
       Proceed to payment
     </button>
@@ -1090,7 +1090,7 @@ async function bookApartment() {
   );
 }
 
-function showBookingModal(type, title, message, buttonText = 'Proceed to payment') {
+function showBookingModal(type, title, message, buttonText = 'Continue') {
   const modal = document.getElementById('bookingModal');
   const icon = document.getElementById('bookingModalIcon');
   const titleEl = document.getElementById('bookingModalTitle');
@@ -1102,15 +1102,20 @@ function showBookingModal(type, title, message, buttonText = 'Proceed to payment
   button.textContent = buttonText;
 
   if (type === 'success') {
-  button.onclick = openEmailModal;
-} else {
-  button.onclick = closeBookingModal;
-}
-
-  if (type === 'success') {
     icon.textContent = '✓';
+
+    // Continue directly to email/payment
+    button.onclick = function () {
+      openEmailModal();
+    };
+
   } else {
     icon.textContent = '×';
+
+    // For unavailable dates, simply close the popup
+    button.onclick = function () {
+      closeBookingModal();
+    };
   }
 
   modal.classList.add('active');
@@ -1123,12 +1128,16 @@ function closeBookingModal() {
 function openEmailModal() {
   closeBookingModal();
 
-  document.getElementById('emailModal').classList.add('active');
+  const emailModal = document.getElementById('emailModal');
 
-  setTimeout(() => {
-    document.getElementById('customerEmail').focus();
-  }, 200);
+  if (!emailModal) {
+    console.error('Email modal was not found.');
+    return;
+  }
+
+  emailModal.classList.add('active');
 }
+
 
 function closeEmailModal() {
   document.getElementById('emailModal').classList.remove('active');
