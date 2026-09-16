@@ -8,6 +8,7 @@ export default async function handler(req, res) {
   try {
     const {
   reference,
+  apartmentId,
   checkin,
   checkout,
   guests,
@@ -18,6 +19,7 @@ export default async function handler(req, res) {
 
     if (
   !reference ||
+  !apartmentId ||
   !checkin ||
   !checkout ||
   !customerName ||
@@ -29,6 +31,31 @@ export default async function handler(req, res) {
         message: 'Missing booking information'
       });
     }
+
+    const properties = {
+  'apartment-1': {
+    name: 'LightGate Unit',
+    rate: 150000,
+    caution: 100000,
+    maxGuests: 4
+  }
+};
+
+const property = properties[apartmentId];
+
+if (!property) {
+  return res.status(400).json({
+    verified: false,
+    message: 'Invalid property'
+  });
+}
+
+if (Number(guests) < 1 || Number(guests) > property.maxGuests) {
+  return res.status(400).json({
+    verified: false,
+    message: 'Invalid number of guests'
+  });
+}
 
     // -----------------------------
     // 1. CALCULATE BOOKING PRICE
@@ -48,10 +75,11 @@ export default async function handler(req, res) {
       });
     }
 
-    const rate = 150000;
-    const caution = 100000;
+    const rate = property.rate;
+const caution = property.caution;
 
-    const expectedAmountNaira = (nights * rate) + caution;
+const expectedAmountNaira =
+  (nights * rate) + caution;
 
     // Paystack amount is returned in kobo
     const expectedAmountKobo = expectedAmountNaira * 100;
@@ -155,12 +183,12 @@ if (
     // -----------------------------
 
     const availabilityURL =
-      `${process.env.SUPABASE_URL}/rest/v1/Bookings` +
-      `?apartment_id=eq.apartment-1` +
-      `&booking_status=eq.confirmed` +
-      `&check_in=lt.${encodeURIComponent(checkout)}` +
-      `&check_out=gt.${encodeURIComponent(checkin)}` +
-      `&select=id`;
+`${process.env.SUPABASE_URL}/rest/v1/Bookings` +
+`?apartment_id=eq.${encodeURIComponent(apartmentId)}` +
+`&booking_status=eq.confirmed` +
+`&check_in=lt.${encodeURIComponent(checkout)}` +
+`&check_out=gt.${encodeURIComponent(checkin)}` +
+`&select=id`;
 
     const availabilityResponse = await fetch(availabilityURL, {
       headers: {
@@ -207,7 +235,7 @@ if (
         },
 
         body: JSON.stringify({
-  apartment_id: 'apartment-1',
+  apartment_id: apartmentId,
   check_in: checkin,
   check_out: checkout,
   guests: Number(guests) || 1,

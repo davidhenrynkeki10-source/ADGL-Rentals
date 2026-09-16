@@ -702,21 +702,487 @@
   color: #999;
 }
 
+/* ---------- Properties Listing ---------- */
+
+.properties-page {
+  min-height: 100vh;
+  background: var(--sand-light);
+  padding: 0 0 110px;
+}
+
+.properties-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 80px 32px 0;
+}
+
+.properties-heading {
+  max-width: 650px;
+  margin-bottom: 50px;
+}
+
+.properties-heading > span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+
+.properties-heading h1 {
+  font-size: clamp(38px, 6vw, 64px);
+  line-height: 1.05;
+  margin-bottom: 18px;
+}
+
+.properties-heading p {
+  max-width: 520px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #665d50;
+}
+
+
+/* Property grid */
+
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+
+/* Individual card */
+
+.property-card {
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 60px -30px rgba(29, 26, 22, 0.35);
+}
+
+
+/* Property image */
+
+.property-card-image {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+  background: #ddd;
+}
+
+.property-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(.16,.9,.25,1);
+}
+
+.property-card:hover .property-card-image img {
+  transform: scale(1.04);
+}
+
+.property-location {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+
+  padding: 8px 13px;
+
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+
+  border-radius: 100px;
+
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* Card content */
+
+.property-card-content {
+  padding: 25px 24px 24px;
+}
+
+.property-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.property-card-top h2 {
+  margin-bottom: 6px;
+  font-size: 27px;
+}
+
+.property-card-top p {
+  font-size: 13px;
+  color: #817768;
+}
+
+
+/* Price */
+
+.property-card-price {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.property-card-price strong {
+  display: block;
+
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 500;
+
+  color: var(--ink);
+}
+
+.property-card-price span {
+  font-size: 11px;
+  color: #8a8172;
+}
+
+
+/* Description */
+
+.property-card-description {
+  margin: 20px 0 24px;
+
+  max-width: 520px;
+
+  font-size: 14px;
+  line-height: 1.7;
+
+  color: #665d50;
+}
+
+
+/* View property button */
+
+.property-view-btn {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 14px 17px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: var(--ink);
+  color: #fff;
+
+  font-family: 'Manrope', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.property-view-btn span {
+  font-size: 19px;
+  transition: transform 0.3s ease;
+}
+
+.property-view-btn:hover {
+  background: var(--gold-deep);
+}
+
+.property-view-btn:hover span {
+  transform: translateX(4px);
+}
+
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 850px) {
+
+  .properties-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .property-card-image {
+    height: 400px;
+  }
+
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 600px) {
+
+  .properties-page {
+    padding: 75px 0 60px;
+  }
+
+  .properties-wrap {
+    padding: 55px 18px 0;
+  }
+
+
+  .properties-heading {
+    margin-bottom: 32px;
+  }
+
+  .properties-heading h1 {
+    font-size: 36px;
+  }
+
+  .properties-heading p {
+    font-size: 13.5px;
+  }
+
+  .property-card-image {
+    height: 270px;
+  }
+
+  .property-card-content {
+    padding: 20px 18px;
+  }
+
+  .property-card-top {
+    gap: 12px;
+  }
+
+  .property-card-top h2 {
+    font-size: 23px;
+  }
+
+  .property-card-price strong {
+    font-size: 17px;
+  }
+
+  .property-card-description {
+    font-size: 13px;
+    margin: 17px 0 20px;
+  }
+
+}
+
+/* Hide individual property page until a property is selected */
+#propertyDetailsPage {
+  display: none;
+}
+
+.back-properties-btn {
+  position: fixed;
+  top: 85px;
+  left: 32px;
+  z-index: 999;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 11px 16px;
+
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 100px;
+
+  background: rgba(20,20,20,0.65);
+  backdrop-filter: blur(10px);
+
+  color: #fff;
+
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.back-properties-btn span {
+  font-size: 17px;
+}
+
+@media (max-width: 600px) {
+  .back-properties-btn {
+    top: 70px;
+    left: 18px;
+    padding: 9px 13px;
+    font-size: 11px;
+  }
+}
+
+/* ---------- Company Header ---------- */
+
+.company-header {
+  width: 100%;
+  padding: 18px 32px;
+  background: transparent;
+}
+
+.company-header-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.company-header-logo {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.company-header h1 {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+@media (max-width: 600px) {
+  .company-header {
+    padding: 16px 18px;
+  }
+
+  .company-header-inner {
+    gap: 12px;
+  }
+
+  .company-header-logo {
+    width: 45px;
+    height: 45px;
+  }
+
+  .company-header h1 {
+    font-size: 19px;
+  }
+}
+
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="brand"><span class="dot"></span>LightGate</div>
-  <nav>
-    <a href="#gallery">Gallery</a>
-    <a href="#stay">The stay</a>
-    <a href="#amenities">Amenities</a>
-    <a href="#location">Location</a>
-    <a href="#book">Rates</a>
-  </nav>
-  <a class="book-pill" href="#book">Book Apartment</a>
+<!-- Properties Listing -->
+<section class="properties-page" id="propertiesPage">
+  <div class="company-header">
+  <div class="company-header-inner">
+
+    <img
+      src="images/company-logo.jpeg"
+      alt="Atimoara Dee Global Limited"
+      class="company-header-logo"
+    >
+
+    <h1>Atimoara Dee Global Limited</h1>
+
+  </div>
 </div>
+  <div class="properties-wrap">
+
+    <div class="properties-heading">
+      <span>Our Properties</span>
+      <h1>Find your perfect stay</h1>
+      <p>
+        Explore our available apartments and choose the space that suits your stay.
+      </p>
+    </div>
+
+    <div class="properties-grid">
+
+      <!-- PROPERTY 1 -->
+      <article class="property-card">
+
+        <div class="property-card-image">
+          <img
+            src="images/image-1.jpeg"
+            alt="LightGate Unit in Ikate, Lekki"
+          >
+
+          <span class="property-location">
+            Ikate, Lekki
+          </span>
+        </div>
+
+        <div class="property-card-content">
+
+          <div class="property-card-top">
+            <div>
+              <h2>LightGate Unit</h2>
+              <p>2 Bedrooms · Up to 4 guests</p>
+            </div>
+
+            <div class="property-card-price">
+              <strong>₦150,000</strong>
+              <span>/ night</span>
+            </div>
+          </div>
+
+          <p class="property-card-description">
+            A fully furnished two-bedroom apartment inside a
+            secured Ikate estate, just minutes from the beach.
+          </p>
+
+          <button
+            type="button"
+            class="property-view-btn"
+            onclick="openProperty('apartment-1')"
+          >
+            View Property
+            <span>→</span>
+          </button>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </div>
+</section>  
+
+<div id="propertyDetailsPage">
+
+  <button
+    type="button"
+    class="back-properties-btn"
+    onclick="backToProperties()"
+  >
+    <span>←</span>
+    Back to Properties
+  </button>
+
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>LightGate</div>
+
+    <nav>
+      <a href="#gallery">Gallery</a>
+      <a href="#stay">The stay</a>
+      <a href="#amenities">Amenities</a>
+      <a href="#location">Location</a>
+      <a href="#book">Rates</a>
+    </nav>
+
+    <a class="book-pill" href="#book">Book Apartment</a>
+  </div>
 
 <section class="hero">
   <div class="hero-slider">
@@ -922,6 +1388,7 @@
     </div>
   </div>
 </footer>
+</div>
 
 <!-- Booking Status Modal -->
 <div class="booking-modal-overlay" id="bookingModal">
@@ -1026,6 +1493,32 @@
 <script src="https://js.paystack.co/v2/inline.js"></script>
 
 <script>
+
+  let selectedPropertyId = null;
+
+function openProperty(propertyId) {
+  selectedPropertyId = propertyId;
+
+  document.getElementById('propertiesPage').style.display = 'none';
+  document.getElementById('propertyDetailsPage').style.display = 'block';
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+function backToProperties() {
+  document.getElementById('propertyDetailsPage').style.display = 'none';
+  document.getElementById('propertiesPage').style.display = 'block';
+
+  selectedPropertyId = null;
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
   
 
   function nightsBetween(a,b){
@@ -1049,6 +1542,11 @@
   }
   
 async function bookApartment() {
+
+  if (!selectedPropertyId) {
+  alert('Please select a property first.');
+  return;
+}
   const checkin = document.getElementById('checkin').value;
   const checkout = document.getElementById('checkout').value;
 
@@ -1094,7 +1592,7 @@ async function bookApartment() {
   const { data, error } = await supabaseClient
     .from('Bookings')
     .select('id, check_in, check_out')
-    .eq('apartment_id', 'apartment-1')
+    .eq('apartment_id', selectedPropertyId)
     .eq('booking_status', 'confirmed')
     .lt('check_in', checkout)
     .gt('check_out', checkin);
@@ -1242,6 +1740,7 @@ function startPaystackPayment() {
       },
     body: JSON.stringify({
   reference: transaction.reference,
+  apartmentId: selectedPropertyId,
   checkin: checkin,
   checkout: checkout,
   guests: parseInt(document.getElementById('guests').value) || 1,
