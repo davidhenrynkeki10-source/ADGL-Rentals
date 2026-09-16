@@ -118,12 +118,13 @@ export default async function handler(req, res) {
     }
 
     if (existingReference.length > 0) {
-      return res.status(200).json({
-        verified: true,
-        bookingCreated: true,
-        message: 'Booking already confirmed'
-      });
-    }
+  return res.status(200).json({
+    verified: true,
+    bookingCreated: true,
+    booking: existingReference[0],
+    message: 'Booking already confirmed'
+  });
+}
 
 
     // -----------------------------
