@@ -947,7 +947,7 @@
   </div>
   </div>
 
-  <!-- Payment Email Modal -->
+<!-- Customer Details / Payment Modal -->
 <div class="booking-modal-overlay" id="emailModal">
   <div class="booking-modal">
 
@@ -964,8 +964,17 @@
     <h3>Continue to Payment</h3>
 
     <p>
-      Enter your email address to continue with your booking.
+      Enter your details to continue with your booking.
     </p>
+
+    <input
+      type="text"
+      id="customerName"
+      class="payment-email-input"
+      placeholder="Full name"
+      autocomplete="name"
+      required
+    >
 
     <input
       type="email"
@@ -973,6 +982,15 @@
       class="payment-email-input"
       placeholder="Email address"
       autocomplete="email"
+      required
+    >
+
+    <input
+      type="tel"
+      id="customerPhone"
+      class="payment-email-input"
+      placeholder="Phone number"
+      autocomplete="tel"
       required
     >
 
@@ -985,47 +1003,9 @@
     </button>
 
   </div>
-
-  <!-- Complete Booking Modal -->
-<div class="booking-modal-overlay" id="completeBookingModal">
-  <div class="booking-modal">
-
-    <div class="booking-modal-icon">✓</div>
-
-    <h3>Complete Your Booking</h3>
-
-    <p>
-      Payment successful! Please enter your details to complete your reservation.
-    </p>
-
-    <input
-      type="text"
-      id="customerName"
-      class="payment-email-input"
-      placeholder="Full name"
-      autocomplete="name"
-    >
-
-    <input
-      type="tel"
-      id="customerPhone"
-      class="payment-email-input"
-      placeholder="Phone number"
-      autocomplete="tel"
-    >
-
-    <button
-      type="button"
-      class="booking-modal-btn"
-      onclick="completeBookingDetails()"
-    >
-      Confirm Booking
-    </button>
-
-  </div>
 </div>
 
-</div>
+
 
 
  
@@ -1046,7 +1026,7 @@
 <script src="https://js.paystack.co/v2/inline.js"></script>
 
 <script>
-  let confirmedBookingId = null;
+  
 
   function nightsBetween(a,b){
     const d1=new Date(a), d2=new Date(b);
@@ -1188,12 +1168,15 @@ function closeEmailModal() {
 }
 
 function startPaystackPayment() {
+  const name = document.getElementById('customerName').value.trim();
   const email = document.getElementById('customerEmail').value.trim();
+  const phone = document.getElementById('customerPhone').value.trim();
 
-  const checkin = document.getElementById('checkin').value;
-  const checkout = document.getElementById('checkout').value;
+  if (!name) {
+    alert('Please enter your full name.');
+    return;
+  }
 
-  // Validate email
   if (!email) {
     alert('Please enter your email address.');
     return;
@@ -1203,6 +1186,15 @@ function startPaystackPayment() {
     alert('Please enter a valid email address.');
     return;
   }
+
+  if (!phone) {
+    alert('Please enter your phone number.');
+    return;
+  }
+
+  const checkin = document.getElementById('checkin').value;
+  const checkout = document.getElementById('checkout').value;
+
 
   // Make sure booking dates still exist
   if (!checkin || !checkout) {
@@ -1248,13 +1240,14 @@ function startPaystackPayment() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
+    body: JSON.stringify({
   reference: transaction.reference,
   checkin: checkin,
   checkout: checkout,
-  guests: parseInt(
-    document.getElementById('guests').value
-  ) || 1
+  guests: parseInt(document.getElementById('guests').value) || 1,
+  customerName: name,
+  customerEmail: email,
+  customerPhone: phone
 })
     });
 
@@ -1274,16 +1267,9 @@ function startPaystackPayment() {
   return;
 }
 
-   // Remember the booking that was just created
-confirmedBookingId = result.booking.id;
-
-// Close the email/payment modal
 closeEmailModal();
 
-// Open the customer details modal
-document
-  .getElementById('completeBookingModal')
-  .classList.add('active');
+alert('Payment successful! Your booking has been confirmed 🎉');  
 
   } catch (error) {
     console.error('Verification error:', error);
@@ -1305,78 +1291,7 @@ document
   });
 }
 
-async function completeBookingDetails() {
-  const name = document
-    .getElementById('customerName')
-    .value
-    .trim();
 
-  const phone = document
-    .getElementById('customerPhone')
-    .value
-    .trim();
-
-  if (!name) {
-    alert('Please enter your full name.');
-    return;
-  }
-
-  if (!phone) {
-    alert('Please enter your phone number.');
-    return;
-  }
-
-  if (!confirmedBookingId) {
-    alert('Booking information could not be found.');
-    return;
-  }
-
-  try {
-    const response = await fetch('/api/complete-booking', {
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json'
-      },
-
-      body: JSON.stringify({
-        bookingId: confirmedBookingId,
-        name: name,
-        phone: phone
-      })
-    });
-
-    const result = await response.json();
-
-    if (!response.ok || !result.success) {
-      alert(
-        result.message ||
-        'Unable to complete your booking. Please try again.'
-      );
-      return;
-    }
-
-    // Close customer details modal
-    document
-      .getElementById('completeBookingModal')
-      .classList.remove('active');
-
-    // Show final confirmation
-    showBookingModal(
-      'success',
-      'Booking Confirmed 🎉',
-      `Thank you ${name}! Your reservation has been successfully confirmed.`,
-      'Done'
-    );
-
-  } catch (error) {
-    console.error('Complete booking error:', error);
-
-    alert(
-      'Unable to save your booking details. Please try again.'
-    );
-  }
-}
 
 document.addEventListener('DOMContentLoaded', function () {
   const checkin = document.getElementById('checkin');

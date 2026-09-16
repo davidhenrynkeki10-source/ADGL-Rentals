@@ -7,13 +7,23 @@ export default async function handler(req, res) {
 
   try {
     const {
-      reference,
-      checkin,
-      checkout,
-      guests
-    } = req.body;
+  reference,
+  checkin,
+  checkout,
+  guests,
+  customerName,
+  customerEmail,
+  customerPhone
+} = req.body;
 
-    if (!reference || !checkin || !checkout) {
+    if (
+  !reference ||
+  !checkin ||
+  !checkout ||
+  !customerName ||
+  !customerEmail ||
+  !customerPhone
+) {
       return res.status(400).json({
         verified: false,
         message: 'Missing booking information'
@@ -74,6 +84,19 @@ export default async function handler(req, res) {
         message: 'Payment could not be verified'
       });
     }
+
+    const verifiedEmail = payment.data.customer?.email;
+
+if (
+  !verifiedEmail ||
+  verifiedEmail.toLowerCase() !== customerEmail.trim().toLowerCase()
+) {
+  return res.status(400).json({
+    verified: false,
+    bookingCreated: false,
+    message: 'Customer email does not match the payment'
+  });
+}
 
 
     // -----------------------------
@@ -184,21 +207,20 @@ export default async function handler(req, res) {
         },
 
         body: JSON.stringify({
-          apartment_id: 'apartment-1',
+  apartment_id: 'apartment-1',
+  check_in: checkin,
+  check_out: checkout,
+  guests: Number(guests) || 1,
+  nights: nights,
+  amount: expectedAmountNaira,
+  payment_status: 'paid',
+  booking_status: 'confirmed',
+  payment_reference: reference,
 
-          check_in: checkin,
-          check_out: checkout,
-
-          guests: Number(guests) || 1,
-          nights: nights,
-
-          amount: expectedAmountNaira,
-
-          payment_status: 'paid',
-          booking_status: 'confirmed',
-
-          payment_reference: reference
-        })
+  customer_name: customerName.trim(),
+  customer_email: verifiedEmail.toLowerCase(),
+  customer_phone: customerPhone.trim()
+})
       }
     );
 
