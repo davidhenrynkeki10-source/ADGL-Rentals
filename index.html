@@ -1207,20 +1207,30 @@ function startPaystackPayment() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        reference: transaction.reference
-      })
+  reference: transaction.reference,
+  checkin: checkin,
+  checkout: checkout,
+  guests: parseInt(
+    document.getElementById('guests').value
+  ) || 1
+})
     });
 
     const result = await response.json();
 
     console.log('Verification result:', result);
 
-    if (!response.ok || !result.verified) {
-      alert(
-        'Payment was received, but we could not verify it. Please contact support.'
-      );
-      return;
-    }
+    if (
+  !response.ok ||
+  !result.verified ||
+  !result.bookingCreated
+) {
+  alert(
+    result.message ||
+    'Payment was verified, but we could not confirm your booking. Please contact support.'
+  );
+  return;
+}
 
     closeEmailModal();
 
