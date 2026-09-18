@@ -705,9 +705,8 @@
 /* ---------- Properties Listing ---------- */
 
 .properties-page {
-  min-height: 100vh;
   background: var(--sand-light);
-  padding: 0 0 110px;
+  padding: 0;
 }
 
 .properties-wrap {
@@ -1305,6 +1304,54 @@
 
       </article>
 
+      <!-- PROPERTY 2 -->
+<article class="property-card">
+
+  <div class="property-card-image">
+    <img
+      src="images/richmond-1.jpeg"
+      alt="Richmond Unit luxury 2 bedroom maisonette in Freedom Way, Lekki"
+    >
+
+    <span class="property-location">
+      Freedom Way, Lekki
+    </span>
+  </div>
+
+  <div class="property-card-content">
+
+    <div class="property-card-top">
+
+      <div>
+        <h2>Richmond Unit</h2>
+        <p>2 Bedrooms · Up to 4 guests</p>
+      </div>
+
+      <div class="property-card-price">
+        <strong>₦250,000</strong>
+        <span>/ night</span>
+      </div>
+
+    </div>
+
+    <p class="property-card-description">
+      A brand-new luxury two-bedroom maisonette in a gated and
+      secured estate on Freedom Way, Lekki.
+    </p>
+
+    <button
+      type="button"
+      class="property-view-btn"
+      onclick="openProperty('apartment-2')"
+    >
+      View Property
+      <span>→</span>
+    </button>
+
+  </div>
+
+</article>
+
     </div>
 
   </div>
@@ -1388,7 +1435,10 @@
   </button>
 
   <div class="topbar">
-    <div class="brand"><span class="dot"></span>LightGate</div>
+    <div class="brand">
+  <span class="dot"></span>
+  <span id="propertyBrand">LightGate</span>
+</div>
 
     <nav>
       <a href="#gallery">Gallery</a>
@@ -1404,30 +1454,54 @@
 <section class="hero">
   <div class="hero-slider">
     <div class="hero-track">
-      <img src="images/image-1.jpeg" alt="LightGate building exterior">
-      <img src="images/image-2.jpeg" alt="LightGate living room">
-      <img src="images/image-3.jpeg" alt="LightGate bedroom">
-      <img src="images/image-4.jpeg" alt="LightGate lounge with marble TV wall">
-      <img src="images/image-5.jpeg" alt="LightGate games table">
-      <img src="images/image-6.jpeg" alt="LightGate Bathroom">
-    </div>
+  <img id="sliderImage1" src="images/image-1.jpeg" alt="LightGate building exterior">
+  <img id="sliderImage2" src="images/image-2.jpeg" alt="LightGate living room">
+  <img id="sliderImage3" src="images/image-3.jpeg" alt="LightGate bedroom">
+  <img id="sliderImage4" src="images/image-4.jpeg" alt="LightGate lounge with marble TV wall">
+  <img id="sliderImage5" src="images/image-5.jpeg" alt="LightGate games table">
+  <img id="sliderImage6" src="images/image-6.jpeg" alt="LightGate bathroom">
+</div>
   </div>
   <div class="hero-dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
   <div class="hero-content">
     <div class="wrap" style="padding:0;">
       <div class="hero-eyebrow">
-        <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-7.2 7-12.2A7 7 0 1 0 5 8.8C5 13.8 12 21 12 21z"/><circle cx="12" cy="8.5" r="2.4"/></svg>
-        Ikate, Lekki — two minutes from the beach
-      </div>
-      <h1>LightGate Unit</h1>
-      <p class="hero-sub">A two-bedroom apartment set inside a gated Ikate estate, built for slow mornings, long weekends, and the occasional game of snooker.</p>
-      <div class="hero-meta">
-        <div><span class="num">2</span><span class="lbl">Bedrooms, en-suite</span></div>
-        <div><span class="num">4</span><span class="lbl">Guests max</span></div>
-        <div><span class="num">24/7</span><span class="lbl">Power &amp; fibre internet</span></div>
-        <div><span class="num">₦150k</span><span class="lbl">Per night</span></div>
-      </div>
-    </div>
+  <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+    <path d="M12 21s7-7.2 7-12.2A7 7 0 1 0 5 8.8C5 13.8 12 21 12 21z"/>
+    <circle cx="12" cy="8.5" r="2.4"/>
+  </svg>
+
+  <span id="propertyHeroLocation">Ikate, Lekki — two minutes from the beach</span>
+</div>
+      <h1 id="propertyName">LightGate Unit</h1>
+
+<p class="hero-sub" id="propertyDescription">
+  A two-bedroom apartment set inside a gated Ikate estate, built for slow mornings, long weekends, and the occasional game of snooker.
+</p>
+
+<div class="hero-meta">
+
+  <div>
+    <span class="num">2</span>
+    <span class="lbl">Bedrooms, en-suite</span>
+  </div>
+
+  <div>
+    <span class="num">4</span>
+    <span class="lbl">Guests max</span>
+  </div>
+
+  <div>
+    <span class="num">24/7</span>
+    <span class="lbl">Power &amp; fibre internet</span>
+  </div>
+
+  <div>
+    <span class="num" id="propertyRate">₦150k</span>
+    <span class="lbl">Per night</span>
+  </div>
+
+</div>
   </div>
   <div class="scroll-cue"><span>SCROLL</span><span class="line"></span></div>
 </section>
@@ -1435,33 +1509,40 @@
 <section class="gallery" id="gallery">
   <div class="wrap">
     <div class="section-head">
-      <h2>Every corner, considered</h2>
-      <p>From the travertine headboard wall to the marble games table — a look through the apartment before you arrive.</p>
-    </div>
+  <h2 id="galleryTitle">Every corner, considered</h2>
+
+  <p id="galleryDescription">
+    From the travertine headboard wall to the marble games table — a look through the apartment before you arrive.
+  </p>
+</div>
     <div class="gallery-grid">
-      <img src="images/image-1.jpeg" alt="LightGate building exterior">
-      <img src="images/image-2.jpeg" alt="LightGate living room">
-      <img src="images/image-4.jpeg" alt="LightGate lounge with marble TV wall">
-      <img src="images/image-5.jpeg" alt="LightGate games table">
-      <img src="images/image-6.jpeg" alt="LightGate Bathroom">
-      <img src="images/image-3.jpeg" alt="LightGate bedroom">
-
-
+  <img id="galleryImage1" src="images/image-1.jpeg" alt="LightGate building exterior">
+  <img id="galleryImage2" src="images/image-2.jpeg" alt="LightGate living room">
+  <img id="galleryImage3" src="images/image-4.jpeg" alt="LightGate lounge with marble TV wall">
+  <img id="galleryImage4" src="images/image-5.jpeg" alt="LightGate games table">
+  <img id="galleryImage5" src="images/image-6.jpeg" alt="LightGate Bathroom">
+  <img id="galleryImage6" src="images/image-3.jpeg" alt="LightGate bedroom">
+</div>
       
     </div>
-    <section class="apartment-video">
+    <section class="apartment-video" id="propertyVideoSection">
   <div class="video-header">
     <span>Take a Tour</span>
     <h2>Explore the Apartment</h2>
   </div>
 
-  <video controls playsinline preload="metadata">
-    <source src="video/apartment-tour.mp4" type="video/mp4">
+  <video id="propertyVideo" controls playsinline preload="metadata">
+  <source
+    id="propertyVideoSource"
+    src="video/apartment-tour.mp4"
+    type="video/mp4"
+  >
     Your browser does not support the video tag.
   </video>
 </section>
-<div class="map-button-wrapper">
+<div class="map-button-wrapper" id="propertyMapSection">
   <a
+    id="propertyMapLink"
     href="https://maps.app.goo.gl/fAAC9FQ3zTbcE1et5"
     target="_blank"
     rel="noopener noreferrer"
@@ -1472,39 +1553,63 @@
     <span class="map-arrow">→</span>
   </a>
 </div>
-  </div>
+
 </section>
 
 <section class="stay" id="stay">
   <div class="wrap">
     <div class="stay-copy">
-      <h3>A quiet stretch of Ikate, fully furnished</h3>
-      <p>LightGate sits inside a gated, secured estate a short drive from the Lekki coastline — close enough to the beach for a morning walk, far enough from the road for genuine quiet. The apartment is tastefully furnished throughout, with two en-suite bedrooms, two balconies, and a living room built around a marble-clad TV wall.</p>
-      <p>Housekeeping is included, and a chef is available on request. Streaming is set up on Netflix, YouTube and DStv, and the estate runs on round-the-clock power alongside a fibre connection fast enough for work calls or a PS5 session.</p>
+      <h3 id="stayTitle">A quiet stretch of Ikate, fully furnished</h3>
+
+<p id="stayParagraph1">
+  LightGate sits inside a gated, secured estate a short drive from the Lekki coastline — close enough to the beach for a morning walk, far enough from the road for genuine quiet. The apartment is tastefully furnished throughout, with two en-suite bedrooms, two balconies, and a living room built around a marble-clad TV wall.
+</p>
+
+<p id="stayParagraph2">
+  Housekeeping is included, and a chef is available on request. Streaming is set up on Netflix, YouTube and DStv, and the estate runs on round-the-clock power alongside a fibre connection fast enough for work calls or a PS5 session.
+</p>
       <div class="quick-facts">
         <div>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20V6a1 1 0 0 1 1-1h6v6H3"/><path d="M11 11h9a1 1 0 0 1 1 1v8"/><path d="M3 15h18"/><circle cx="7" cy="17.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="17" cy="17.5" r="1.2" fill="currentColor" stroke="none"/></svg>
-          <div><b>Two en-suite bedrooms</b>Sleeps up to four guests comfortably</div>
+          <div>
+  <b id="quickFact1Title">Two en-suite bedrooms</b>
+  <span id="quickFact1Text">Sleeps up to four guests comfortably</span>
+</div>
         </div>
         <div>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
-          <div><b>PS5 &amp; games table</b>Snooker, table tennis, and streaming set up</div>
+          <div>
+  <b id="quickFact2Title">PS5 &amp; games table</b>
+  <span id="quickFact2Text">Snooker, table tennis, and streaming set up</span>
+</div>
         </div>
         <div>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-7.2 7-12.2A7 7 0 1 0 5 8.8C5 13.8 12 21 12 21z"/><circle cx="12" cy="8.5" r="2.4"/></svg>
-          <div><b>Gated Ikate estate</b>Two minutes from the Lekki beachfront</div>
+          <div>
+  <b id="quickFact3Title">Gated Ikate estate</b>
+  <span id="quickFact3Text">Two minutes from the Lekki beachfront</span>
+</div>
         </div>
         <div>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 13a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v6H4v-6z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
-          <div><b>Chef &amp; housekeeping</b>Available on demand throughout your stay</div>
+          <div>
+  <b id="quickFact4Title">Chef &amp; housekeeping</b>
+  <span id="quickFact4Text">Available on demand throughout your stay</span>
+</div>
         </div>
       </div>
     </div>
 
     <aside class="book-card" id="book">
       <div class="price-row">
-        <span class="price">₦150,000 <small>/ night</small></span>
-        <span class="caution">+ ₦100,000 caution</span>
+        <span class="price">
+  <span id="bookingRate">₦150,000</span>
+  <small>/ night</small>
+</span>
+
+<span class="caution" id="bookingCaution">
+  + ₦100,000 caution
+</span>
       </div>
       <div class="field-grid">
         <div>
@@ -1530,7 +1635,10 @@
       </div>
       <div class="cost-breakdown" id="breakdown" style="display:none;">
         <div class="row"><span id="nightsLabel">—</span><span id="nightsTotal">₦0</span></div>
-        <div class="row"><span>Caution deposit</span><span>₦100,000</span></div>
+        <div class="row">
+  <span>Caution deposit</span>
+  <span id="breakdownCaution">₦100,000</span>
+</div>
         <div class="row total"><span>Total due</span><span id="grandTotal">₦0</span></div>
       </div>
       <button class="btn-primary" onclick="bookApartment()">Book Apartment</button>
@@ -1545,7 +1653,7 @@
       <h2>What's included</h2>
       <p>Everything below is already at the apartment — nothing to arrange, nothing extra to rent.</p>
     </div>
-    <div class="amen-grid">
+    <div class="amen-grid" id="propertyAmenities">
       <div class="amen-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-7.2 7-12.2A7 7 0 1 0 5 8.8C5 13.8 12 21 12 21z"/><circle cx="12" cy="8.5" r="2.4"/></svg><span>Gated and secured estate</span></div>
       <div class="amen-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg><span>24/7 power supply</span></div>
       <div class="amen-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12h2m16 0h2M12 2v2m0 16v2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/><circle cx="12" cy="12" r="4"/></svg><span>Serene, quiet environment</span></div>
@@ -1573,9 +1681,11 @@
 <section class="loc-rules" id="location">
   <div class="wrap">
     <div class="loc-panel">
-      <h2>Ikate, Lekki</h2>
-      <p>Tucked inside a residential Ikate estate, LightGate puts you close to Lekki's restaurants and beach clubs while staying well back from the noise of the main road. It's the kind of location that works equally well for a couples' weekend, a small family trip, or a quiet work-from-Lagos stretch.</p>
-      <div class="loc-tags">
+      <h2 id="propertyLocation">Ikate, Lekki</h2>
+      <p id="propertyLocationDescription">
+  Tucked inside a residential Ikate estate, LightGate puts you close to Lekki's restaurants and beach clubs while staying well back from the noise of the main road. It's the kind of location that works equally well for a couples' weekend, a small family trip, or a quiet work-from-Lagos stretch.
+</p>
+      <div class="loc-tags" id="propertyLocationTags">
         <span>Gated estate</span>
         <span>2 min to the beach</span>
         <span>Ikate, Lekki</span>
@@ -1596,12 +1706,23 @@
 <footer>
   <div class="wrap">
     <div class="foot-top">
-      <div class="brand"><span class="dot"></span>LightGate</div>
+
+      <div class="brand">
+        <span class="dot"></span>
+        <span id="footerBrand">LightGate</span>
+      </div>
+
       <a class="foot-cta" href="#book">Book Apartment</a>
     </div>
+
     <div class="fine">
-      <span>LightGate Unit · Ikate, Lekki, Lagos</span>
-      <span>₦150,000 / night · ₦100,000 refundable caution</span>
+      <span id="footerLocation">
+        LightGate Unit · Ikate, Lekki, Lagos
+      </span>
+
+      <span id="footerPrice">
+        ₦150,000 / night · ₦100,000 refundable caution
+      </span>
     </div>
   </div>
 </footer>
@@ -1711,12 +1832,335 @@
 
 <script>
 
-  let selectedPropertyId = null;
+ const propertiesData = {
+  'apartment-1': {
+    name: 'LightGate Unit',
+    location: 'Ikate, Lekki',
+    rate: 150000,
+    caution: 100000,
+    bedrooms: 2,
+    maxGuests: 4,
+    description:
+      'A two-bedroom apartment set inside a gated Ikate estate, built for slow mornings, long weekends, and the occasional game of snooker.',
+    locationDescription:
+  "Tucked inside a residential Ikate estate, LightGate puts you close to Lekki's restaurants and beach clubs while staying well back from the noise of the main road. It's the kind of location that works equally well for a couples' weekend, a small family trip, or a quiet work-from-Lagos stretch.",
+    heroLocation: 'Ikate, Lekki — two minutes from the beach',
+    stayTitle: 'A quiet stretch of Ikate, fully furnished',
+
+stayParagraph1:
+  'LightGate sits inside a gated, secured estate a short drive from the Lekki coastline — close enough to the beach for a morning walk, far enough from the road for genuine quiet. The apartment is tastefully furnished throughout, with two en-suite bedrooms, two balconies, and a living room built around a marble-clad TV wall.',
+
+stayParagraph2:
+  'Housekeeping is included, and a chef is available on request. Streaming is set up on Netflix, YouTube and DStv, and the estate runs on round-the-clock power alongside a fibre connection fast enough for work calls or a PS5 session.',
+    quickFacts: [
+  {
+    title: 'Two en-suite bedrooms',
+    text: 'Sleeps up to four guests comfortably'
+  },
+  {
+    title: 'PS5 & games table',
+    text: 'Snooker, table tennis, and streaming set up'
+  },
+  {
+    title: 'Gated Ikate estate',
+    text: 'Two minutes from the Lekki beachfront'
+  },
+  {
+    title: 'Chef & housekeeping',
+    text: 'Available on demand throughout your stay'
+  }
+],
+  galleryTitle: 'Every corner, considered',
+
+galleryDescription:
+  'From the travertine headboard wall to the marble games table — a look through the apartment before you arrive.',
+  locationTags: [
+  'Gated estate',
+  '2 min to the beach',
+  'Ikate, Lekki',
+  'Dedicated parking'
+],
+
+  mapLink: 'https://maps.app.goo.gl/fAAC9FQ3zTbcE1et5',
+    images: [
+  'images/image-1.jpeg',
+  'images/image-2.jpeg',
+  'images/image-4.jpeg',
+  'images/image-5.jpeg',
+  'images/image-6.jpeg',
+  'images/image-3.jpeg'
+],
+
+  video: 'video/apartment-tour.mp4',
+
+  sliderImages: [
+  'images/image-1.jpeg',
+  'images/image-2.jpeg',
+  'images/image-3.jpeg',
+  'images/image-4.jpeg',
+  'images/image-5.jpeg',
+  'images/image-6.jpeg'
+],
+    amenities: [
+  'Gated and secured estate',
+  '24/7 power supply',
+  'Serene, quiet environment',
+  'Super-fast fibre internet',
+  'Two minutes from the beach',
+  'PS5 console',
+  'Snooker board & table tennis',
+  'Two private balconies',
+  'Netflix, YouTube & DStv',
+  'Fully equipped kitchen',
+  'Swing chair',
+  'Smart lock entry',
+  'En-suite rooms',
+  'Daily housekeeping',
+  'Dedicated car park space',
+  'Water heater',
+  'Iron & ironing board',
+  'Washing machine',
+  'Tastefully furnished',
+  'Chef on demand'
+]
+},
+
+  'apartment-2': {
+    name: 'Richmond Unit',
+    location: 'Freedom Way, Lekki',
+    rate: 250000,
+    caution: 100000,
+    bedrooms: 2,
+    maxGuests: 4,
+    description:
+      'A brand-new luxury two-bedroom maisonette set inside a gated and secured estate on Freedom Way, Lekki.',
+    
+    locationDescription:
+  'Located on Freedom Way, Lekki, Richmond Unit is set inside a gated and secured estate with a serene environment, dedicated parking and convenient access to the surrounding Lekki area.',  
+    heroLocation: 'Freedom Way, Lekki',
+    stayTitle: 'Luxury living on Freedom Way',
+
+stayParagraph1:
+  'Richmond Unit is a brand-new luxury two-bedroom maisonette located inside a gated and secured estate on Freedom Way, Lekki. The apartment is tastefully furnished with en-suite rooms, a fully equipped kitchen, smart-lock entry and dedicated car parking.',
+
+stayParagraph2:
+  'Guests enjoy 24/7 power, super-fast internet, Netflix, YouTube and DStv, a PS5 console, snooker and table tennis. Housekeeping is available, with a chef on demand for added convenience during your stay.',
+    
+    quickFacts: [
+  {
+    title: 'Two en-suite bedrooms',
+    text: 'Sleeps up to four guests comfortably'
+  },
+  {
+    title: 'PS5 & games',
+    text: 'Snooker, table tennis and entertainment'
+  },
+  {
+    title: 'Gated Freedom Way estate',
+    text: 'Secure and serene Lekki environment'
+  },
+  {
+    title: 'Chef & housekeeping',
+    text: 'Available for added convenience'
+  }
+],
+  galleryTitle: 'A closer look at Richmond',
+
+galleryDescription:
+  'Explore the details of this brand-new luxury maisonette — from its contemporary living spaces and entertainment areas to its beautifully finished bedrooms and interiors.',
+  locationTags: [
+  'Gated & secured estate',
+  'Freedom Way, Lekki',
+  'Serene environment',
+  'Dedicated parking'
+],
+
+  mapLink: null,
+    images: [
+  'images/richmond-1.jpeg',
+  'images/richmond-2.jpeg',
+  'images/richmond-3.jpeg',
+  'images/richmond-4.jpeg',
+  'images/richmond-5.jpeg',
+  'images/richmond-6.jpeg'
+],
+
+  video: 'video/richmond-tour.mp4',
+
+  sliderImages: [
+  'images/richmond-1.jpeg',
+  'images/richmond-2.jpeg',
+  'images/richmond-3.jpeg',
+  'images/richmond-4.jpeg',
+  'images/richmond-5.jpeg',
+  'images/richmond-6.jpeg'
+],
+    amenities: [
+  'BDSM Kit',
+  'Gated and secured estate',
+  '24/7 power supply',
+  'Serene environment',
+  'Super-fast internet',
+  'PS5 console',
+  'Snooker board / table tennis',
+  'Netflix / YouTube / DStv',
+  'Fully equipped kitchen',
+  'Smart lock',
+  'En-suite rooms',
+  'Housekeeping',
+  'Dedicated car park space',
+  'Water heater',
+  'Iron and ironing board',
+  'Washing machine',
+  'Tastefully furnished',
+  'Chef on demand'
+]
+}
+};
+
+let selectedPropertyId = null;
 
 function openProperty(propertyId) {
   selectedPropertyId = propertyId;
 
+  const property = propertiesData[propertyId];
+
+  if (!property) {
+    alert('Property not found.');
+    return;
+  }
+
+  // Update property details
+  document.getElementById('propertyName').textContent = property.name;
+  document.getElementById('propertyBrand').textContent =
+  property.name;
+  document.getElementById('propertyDescription').textContent = property.description;
+  document.getElementById('propertyLocation').textContent = property.location;
+  document.getElementById('propertyHeroLocation').textContent =
+  property.heroLocation;
+  document.getElementById('propertyLocationDescription').textContent =
+  property.locationDescription;
+  // Update gallery heading
+document.getElementById('galleryTitle').textContent =
+  property.galleryTitle;
+
+document.getElementById('galleryDescription').textContent =
+  property.galleryDescription;
+  // Update location tags
+document.getElementById('propertyLocationTags').innerHTML =
+  property.locationTags
+    .map(tag => `<span>${tag}</span>`)
+    .join('');
+  // Update stay section
+document.getElementById('stayTitle').textContent =
+  property.stayTitle;
+
+document.getElementById('stayParagraph1').textContent =
+  property.stayParagraph1;
+
+document.getElementById('stayParagraph2').textContent =
+  property.stayParagraph2;
+
+// Update quick facts
+property.quickFacts.forEach((fact, index) => {
+  const number = index + 1;
+
+  document.getElementById(`quickFact${number}Title`).textContent =
+    fact.title;
+
+  document.getElementById(`quickFact${number}Text`).textContent =
+    fact.text;
+});  
+  document.getElementById('propertyRate').textContent =
+    `₦${(property.rate / 1000).toLocaleString()}k`;
+
+  // Update booking card prices
+document.getElementById('bookingRate').textContent =
+  `₦${property.rate.toLocaleString()}`;
+
+document.getElementById('bookingCaution').textContent =
+  `+ ₦${property.caution.toLocaleString()} caution`;
+
+document.getElementById('breakdownCaution').textContent =
+  `₦${property.caution.toLocaleString()}`;
+
+// Reset old calculation when switching properties
+document.getElementById('breakdown').style.display = 'none';  
+
+// Update property footer
+document.getElementById('footerBrand').textContent =
+  property.name;
+
+document.getElementById('footerLocation').textContent =
+  `${property.name} · ${property.location}, Lagos`;
+
+document.getElementById('footerPrice').textContent =
+  `₦${property.rate.toLocaleString()} / night · ₦${property.caution.toLocaleString()} refundable caution`;
+
+  // Update property gallery
+property.images.forEach((image, index) => {
+  const galleryImage = document.getElementById(`galleryImage${index + 1}`);
+
+  if (galleryImage) {
+    galleryImage.src = image;
+    galleryImage.alt = `${property.name} property image ${index + 1}`;
+  }
+});
+
+
+
+// Update hero slider images
+property.sliderImages.forEach((image, index) => {
+  const sliderImage = document.getElementById(`sliderImage${index + 1}`);
+
+  if (sliderImage) {
+    sliderImage.src = image;
+    sliderImage.alt = `${property.name} property image ${index + 1}`;
+  }
+});
+
+// Update property video
+const propertyVideo = document.getElementById('propertyVideo');
+const propertyVideoSource = document.getElementById('propertyVideoSource');
+
+propertyVideo.pause();
+propertyVideoSource.src = property.video;
+propertyVideo.load();
+
+// Update Google Maps
+const propertyMapSection = document.getElementById('propertyMapSection');
+const propertyMapLink = document.getElementById('propertyMapLink');
+
+if (property.mapLink) {
+  propertyMapLink.href = property.mapLink;
+  propertyMapSection.style.display = '';
+} else {
+  propertyMapSection.style.display = 'none';
+}
+  // Update property amenities
+const amenitiesContainer = document.getElementById('propertyAmenities');
+
+amenitiesContainer.innerHTML = property.amenities.map(amenity => `
+  <div class="amen-item">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+    >
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="m8 12 2.5 2.5L16 9"></path>
+    </svg>
+
+    <span>${amenity}</span>
+  </div>
+`).join('');
+  // Hide properties listing
   document.getElementById('propertiesPage').style.display = 'none';
+
+  // Show selected property
   document.getElementById('propertyDetailsPage').style.display = 'block';
 
   window.scrollTo({
@@ -1743,20 +2187,45 @@ function backToProperties() {
     const diff=(d2-d1)/(1000*60*60*24);
     return diff>0?Math.round(diff):0;
   }
-  function calcTotal(){
-    const ci=document.getElementById('checkin').value;
-    const co=document.getElementById('checkout').value;
-    const box=document.getElementById('breakdown');
-    if(!ci||!co){ alert('Choose your check-in and check-out dates.'); return; }
-    const n=nightsBetween(ci,co);
-    if(n<=0){ alert('Check-out must be after check-in.'); return; }
-    const rate=150000, caution=100000;
-    const stay=n*rate;
-    document.getElementById('nightsLabel').textContent = `₦150,000 × ${n} night${n>1?'s':''}`;
-    document.getElementById('nightsTotal').textContent = '₦'+stay.toLocaleString();
-    document.getElementById('grandTotal').textContent = '₦'+(stay+caution).toLocaleString();
-    box.style.display='block';
+  function calcTotal() {
+  const ci = document.getElementById('checkin').value;
+  const co = document.getElementById('checkout').value;
+  const box = document.getElementById('breakdown');
+
+  if (!ci || !co) {
+    alert('Choose your check-in and check-out dates.');
+    return;
   }
+
+  const n = nightsBetween(ci, co);
+
+  if (n <= 0) {
+    alert('Check-out must be after check-in.');
+    return;
+  }
+
+  const property = propertiesData[selectedPropertyId];
+
+  if (!property) {
+    alert('Please select a property first.');
+    return;
+  }
+
+  const rate = property.rate;
+  const caution = property.caution;
+  const stay = n * rate;
+
+  document.getElementById('nightsLabel').textContent =
+    `₦${rate.toLocaleString()} × ${n} night${n > 1 ? 's' : ''}`;
+
+  document.getElementById('nightsTotal').textContent =
+    '₦' + stay.toLocaleString();
+
+  document.getElementById('grandTotal').textContent =
+    '₦' + (stay + caution).toLocaleString();
+
+  box.style.display = 'block';
+}
   
 async function bookApartment() {
 
@@ -1926,11 +2395,20 @@ function startPaystackPayment() {
     return;
   }
 
-  // Booking price
-  const rate = 150000;
-  const caution = 100000;
+  // Get selected property's booking price
+const property = propertiesData[selectedPropertyId];
 
-  const totalNaira = (nights * rate) + caution;
+if (!property) {
+  alert('Please select a property first.');
+  closeEmailModal();
+  return;
+}
+
+const rate = property.rate;
+const caution = property.caution;
+
+const totalNaira = (nights * rate) + caution;
+ 
 
   // Paystack expects amount in kobo
   const amountInKobo = totalNaira * 100;

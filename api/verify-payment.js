@@ -38,6 +38,13 @@ export default async function handler(req, res) {
     rate: 150000,
     caution: 100000,
     maxGuests: 4
+  },
+
+  'apartment-2': {
+    name: 'Richmond Unit ',
+    rate: 250000,
+    caution: 100000,
+    maxGuests: 4
   }
 };
 
