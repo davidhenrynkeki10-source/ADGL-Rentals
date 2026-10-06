@@ -214,9 +214,7 @@ export default async function handler(req, res) {
     // 9. Create Bachs LIVE checkout
     // -----------------------------------
 
-    const auth = Buffer.from(
-      `${process.env.BACHS_SECRET_KEY}:`
-    ).toString('base64');
+
 
     const bachsResponse = await fetch(
       'https://api.bachs.io/v1/checkout-sessions',
@@ -224,9 +222,9 @@ export default async function handler(req, res) {
         method: 'POST',
 
         headers: {
-          Authorization: `Basic ${auth}`,
-          'Content-Type': 'application/json'
-        },
+  Authorization: `Bearer ${process.env.BACHS_SECRET_KEY}`,
+  'Content-Type': 'application/json'
+},
 
         body: JSON.stringify({
           pricing: {
