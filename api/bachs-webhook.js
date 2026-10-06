@@ -88,12 +88,23 @@ export default async function handler(req, res) {
     // 2. Verify Bachs signature
     // -----------------------------------
 
-    const signatureIsValid = verifyBachsSignature(
-      rawBody,
-      process.env.BACHS_WEBHOOK_SECRET,
-      timestampHeader,
-      signatureHeader
-    );
+    const productionSignatureIsValid = verifyBachsSignature(
+  rawBody,
+  process.env.BACHS_WEBHOOK_SECRET,
+  timestampHeader,
+  signatureHeader
+);
+
+const sandboxSignatureIsValid = verifyBachsSignature(
+  rawBody,
+  process.env.BACHS_SANDBOX_WEBHOOK_SECRET,
+  timestampHeader,
+  signatureHeader
+);
+
+const signatureIsValid =
+  productionSignatureIsValid ||
+  sandboxSignatureIsValid;
 
     if (!signatureIsValid) {
       console.error('Invalid Bachs webhook signature');
