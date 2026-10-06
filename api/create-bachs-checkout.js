@@ -60,7 +60,7 @@ export default async function handler(req, res) {
     } = req.body || {};
 
     // -----------------------------------
-    // 1. Validate the selected property
+    // 1. Validate selected property
     // -----------------------------------
 
     const property = properties[apartmentId];
@@ -73,7 +73,7 @@ export default async function handler(req, res) {
     }
 
     // -----------------------------------
-    // 2. Validate customer information
+    // 2. Validate customer details
     // -----------------------------------
 
     if (
@@ -105,7 +105,7 @@ export default async function handler(req, res) {
     }
 
     // -----------------------------------
-    // 4. Calculate nights SERVER-SIDE
+    // 4. Calculate nights server-side
     // -----------------------------------
 
     const nights = calculateNights(checkIn, checkOut);
@@ -118,7 +118,7 @@ export default async function handler(req, res) {
     }
 
     // -----------------------------------
-    // 5. Calculate price SERVER-SIDE
+    // 5. Calculate authoritative price
     // -----------------------------------
 
     const expectedAmount =
@@ -128,15 +128,17 @@ export default async function handler(req, res) {
     // 6. Recheck availability
     // -----------------------------------
 
-    const { data: overlappingBookings, error: availabilityError } =
-      await supabase
-        .from('Bookings')
-        .select('id')
-        .eq('apartment_id', apartmentId)
-        .eq('booking_status', 'confirmed')
-        .lt('check_in', checkOut)
-        .gt('check_out', checkIn)
-        .limit(1);
+    const {
+      data: overlappingBookings,
+      error: availabilityError
+    } = await supabase
+      .from('Bookings')
+      .select('id')
+      .eq('apartment_id', apartmentId)
+      .eq('booking_status', 'confirmed')
+      .lt('check_in', checkOut)
+      .gt('check_out', checkIn)
+      .limit(1);
 
     if (availabilityError) {
       console.error(
@@ -159,14 +161,57 @@ export default async function handler(req, res) {
     }
 
     // -----------------------------------
-    // 7. Generate our own reference
+    // 7. Generate our booking reference
     // -----------------------------------
 
     const reference =
       `ADGL-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
 
     // -----------------------------------
-    // 8. Create Bachs live checkout
+    // 8. Store pending booking FIRST
+    // -----------------------------------
+
+    const {
+      data: pendingBooking,
+      error: pendingBookingError
+    } = await supabase
+      .from('PendingBookings')
+      .insert({
+        reference,
+
+        apartment_id: apartmentId,
+        check_in: checkIn,
+        check_out: checkOut,
+
+        guests: guestCount,
+        nights,
+
+        expected_amount: expectedAmount,
+        currency: 'NGN',
+
+        customer_name: customerName.trim(),
+        customer_email: customerEmail.trim().toLowerCase(),
+        customer_phone: customerPhone.trim(),
+
+        status: 'pending'
+      })
+      .select('id')
+      .single();
+
+    if (pendingBookingError || !pendingBooking) {
+      console.error(
+        'Pending booking insert error:',
+        pendingBookingError
+      );
+
+      return res.status(500).json({
+        success: false,
+        message: 'Unable to prepare booking for payment'
+      });
+    }
+
+    // -----------------------------------
+    // 9. Create Bachs LIVE checkout
     // -----------------------------------
 
     const auth = Buffer.from(
@@ -189,15 +234,39 @@ export default async function handler(req, res) {
             currency: 'NGN'
           },
 
-          reference
+          reference,
+
+          success_url:
+            'https://stays.atimoaradeegloballimited.com/payment-success.html',
+
+          cancel_url:
+            'https://stays.atimoaradeegloballimited.com/'
         })
       }
     );
 
-    const bachsData = await bachsResponse.json();
+    let bachsData;
+
+    try {
+      bachsData = await bachsResponse.json();
+    } catch {
+      bachsData = null;
+    }
 
     if (!bachsResponse.ok) {
-      console.error('Bachs checkout error:', bachsData);
+      console.error(
+        'Bachs checkout error:',
+        bachsData
+      );
+
+      // No payment checkout exists that we can use,
+      // so mark this attempt as failed.
+      await supabase
+        .from('PendingBookings')
+        .update({
+          status: 'failed'
+        })
+        .eq('id', pendingBooking.id);
 
       return res.status(502).json({
         success: false,
@@ -205,11 +274,21 @@ export default async function handler(req, res) {
       });
     }
 
-    if (!bachsData.checkout_id || !bachsData.checkout_url) {
+    if (
+      !bachsData?.checkout_id ||
+      !bachsData?.checkout_url
+    ) {
       console.error(
         'Unexpected Bachs checkout response:',
         bachsData
       );
+
+      await supabase
+        .from('PendingBookings')
+        .update({
+          status: 'failed'
+        })
+        .eq('id', pendingBooking.id);
 
       return res.status(502).json({
         success: false,
@@ -218,46 +297,32 @@ export default async function handler(req, res) {
     }
 
     // -----------------------------------
-// 9. Store pending booking securely
-// -----------------------------------
+    // 10. Attach Bachs checkout ID
+    // -----------------------------------
 
-const { error: pendingBookingError } = await supabase
-  .from('PendingBookings')
-  .insert({
-    reference,
-    checkout_id: bachsData.checkout_id,
+    const {
+      error: checkoutUpdateError
+    } = await supabase
+      .from('PendingBookings')
+      .update({
+        checkout_id: bachsData.checkout_id
+      })
+      .eq('id', pendingBooking.id);
 
-    apartment_id: apartmentId,
-    check_in: checkIn,
-    check_out: checkOut,
+    if (checkoutUpdateError) {
+      console.error(
+        'Checkout ID update error:',
+        checkoutUpdateError
+      );
 
-    guests: guestCount,
-    nights,
-
-    expected_amount: expectedAmount,
-    currency: 'NGN',
-
-    customer_name: customerName.trim(),
-    customer_email: customerEmail.trim().toLowerCase(),
-    customer_phone: customerPhone.trim(),
-
-    status: 'pending'
-  });
-
-if (pendingBookingError) {
-  console.error(
-    'Pending booking insert error:',
-    pendingBookingError
-  );
-
-  return res.status(500).json({
-    success: false,
-    message: 'Unable to prepare booking for payment'
-  });
-}
+      return res.status(500).json({
+        success: false,
+        message: 'Unable to finalize payment checkout'
+      });
+    }
 
     // -----------------------------------
-    // 10. Return checkout information
+    // 11. Return Bachs checkout URL
     // -----------------------------------
 
     return res.status(200).json({

@@ -1832,7 +1832,7 @@
     <button
       type="button"
       class="booking-modal-btn"
-      onclick="startPaystackPayment()"
+      onclick="startBachsPayment()"
     >
       Continue to Payment
     </button>
@@ -2381,10 +2381,14 @@ function closeEmailModal() {
   document.getElementById('emailModal').classList.remove('active');
 }
 
-function startPaystackPayment() {
+async function startBachsPayment() {
   const name = document.getElementById('customerName').value.trim();
   const email = document.getElementById('customerEmail').value.trim();
   const phone = document.getElementById('customerPhone').value.trim();
+
+  // -------------------------------
+  // Validate customer information
+  // -------------------------------
 
   if (!name) {
     alert('Please enter your full name.');
@@ -2406,11 +2410,13 @@ function startPaystackPayment() {
     return;
   }
 
+  // -------------------------------
+  // Get booking information
+  // -------------------------------
+
   const checkin = document.getElementById('checkin').value;
   const checkout = document.getElementById('checkout').value;
 
-
-  // Make sure booking dates still exist
   if (!checkin || !checkout) {
     alert('Please select your booking dates again.');
     closeEmailModal();
@@ -2425,96 +2431,70 @@ function startPaystackPayment() {
     return;
   }
 
-  // Get selected property's booking price
-const property = propertiesData[selectedPropertyId];
+  if (!selectedPropertyId) {
+    alert('Please select a property first.');
+    closeEmailModal();
+    return;
+  }
 
-if (!property) {
-  alert('Please select a property first.');
-  closeEmailModal();
-  return;
-}
+  const guests =
+    parseInt(document.getElementById('guests').value, 10) || 1;
 
-const rate = property.rate;
-const caution = property.caution;
-
-const totalNaira = (nights * rate) + caution;
- 
-
-  // Paystack expects amount in kobo
-  const amountInKobo = totalNaira * 100;
-
-  const paystack = new PaystackPop();
-
-  paystack.newTransaction({
-    key: 'pk_test_388982eb6bcce82e0047c298a3194f8eee8cf318',
-
-    email: email,
-
-    amount: amountInKobo,
-
-    currency: 'NGN',
-
-    onSuccess: async (transaction) => {
-  console.log('Paystack transaction:', transaction);
+  // -------------------------------
+  // Ask OUR SERVER to create Bachs checkout
+  // -------------------------------
 
   try {
-    const response = await fetch('/api/verify-payment', {
+    const response = await fetch('/api/create-bachs-checkout', {
       method: 'POST',
+
       headers: {
         'Content-Type': 'application/json'
       },
-    body: JSON.stringify({
-  reference: transaction.reference,
-  apartmentId: selectedPropertyId,
-  checkin: checkin,
-  checkout: checkout,
-  guests: parseInt(document.getElementById('guests').value) || 1,
-  customerName: name,
-  customerEmail: email,
-  customerPhone: phone
-})
+
+      body: JSON.stringify({
+        apartmentId: selectedPropertyId,
+        checkIn: checkin,
+        checkOut: checkout,
+        guests: guests,
+
+        customerName: name,
+        customerEmail: email,
+        customerPhone: phone
+      })
     });
 
     const result = await response.json();
 
-    console.log('Verification result:', result);
+    console.log('Bachs checkout result:', result);
 
     if (
-  !response.ok ||
-  !result.verified ||
-  !result.bookingCreated
-) {
-  alert(
-    result.message ||
-    'Payment was verified, but we could not confirm your booking. Please contact support.'
-  );
-  return;
-}
+      !response.ok ||
+      !result.success ||
+      !result.checkoutUrl
+    ) {
+      alert(
+        result.message ||
+        'Unable to start payment. Please try again.'
+      );
 
-closeEmailModal();
+      return;
+    }
 
-alert('Payment successful! Your booking has been confirmed 🎉');  
+    // -------------------------------
+    // Redirect to secure Bachs checkout
+    // -------------------------------
+
+    window.location.href = result.checkoutUrl;
 
   } catch (error) {
-    console.error('Verification error:', error);
+    console.error('Bachs checkout error:', error);
 
     alert(
-      'Payment was received, but verification failed. Please contact support.'
+      'Unable to connect to the payment service. Please try again.'
     );
   }
-},
-
-    onCancel: () => {
-      console.log('Customer cancelled payment.');
-    },
-
-    onError: (error) => {
-      console.error('Paystack error:', error);
-      alert('Unable to start payment. Please try again.');
-    }
-  });
 }
-
 
 
 document.addEventListener('DOMContentLoaded', function () {
