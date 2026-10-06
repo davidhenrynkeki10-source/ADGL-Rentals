@@ -217,12 +217,12 @@ export default async function handler(req, res) {
 
 
     const bachsResponse = await fetch(
-      'https://sandbox-api.bachs.io/v1/checkout-sessions',
+      'https://api.bachs.io/v1/checkout-sessions',
       {
         method: 'POST',
 
         headers: {
-  Authorization: `Bearer ${process.env.BACHS_SANDBOX_SECRET_KEY}`,
+  Authorization: `Bearer ${process.env.BACHS_SECRET_KEY}`,
   'Content-Type': 'application/json'
 },
 
